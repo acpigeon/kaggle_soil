@@ -1,5 +1,4 @@
 # To Do:
-# add missing numeric features
 # add missing categorical features
 # add grid search to models
 
@@ -27,10 +26,12 @@ def get_data():
     train_predict_data = train[['Ca', 'P', 'pH', 'SOC', 'Sand']].values
     train_predict_labels = train[['Ca', 'P', 'pH', 'SOC', 'Sand']].columns.values
 
-    train_feature_data = train.ix[:, :3578].values  # includes PIDN
-    train_feature_labels = train.ix[:, :3578].columns.values
+    train_feature_data = train.ix[:, :3579].values  # includes PIDN
+    train_feature_labels = train.ix[:, :3579].columns.values
+    print train_feature_labels[3500:]
+    print train_feature_labels.shape
 
-    test_feature_data = np.array(test.ix[:, :3578])  # includes PIDN
+    test_feature_data = np.array(test.ix[:, :3579])  # includes PIDN
 
     # Split data in to test/train sets
     # Since train_test_split doesn't like a matrix of dependent variables we have to do this once for each
