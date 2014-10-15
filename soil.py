@@ -1,5 +1,5 @@
 # To Do:
-# add missing categorical features
+# add missing categorical features [x] and test[]
 # add grid search to models
 
 import pandas as pd
@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.cross_validation import train_test_split
 from sklearn import svm
 from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import OneHotEncoder
 
 
 def get_data():
@@ -26,12 +27,32 @@ def get_data():
     train_predict_data = train[['Ca', 'P', 'pH', 'SOC', 'Sand']].values
     train_predict_labels = train[['Ca', 'P', 'pH', 'SOC', 'Sand']].columns.values
 
-    train_feature_data = train.ix[:, :3579].values  # includes PIDN
-    train_feature_labels = train.ix[:, :3579].columns.values
-    print train_feature_labels[3500:]
-    print train_feature_labels.shape
+    train_feature_data = train.ix[:, :3580].values  # includes PIDN
+    train_feature_labels = train.ix[:, :3579].columns.values  # don't pull in column 3580, it's a categorical feature with two values...
+    train_feature_labels = np.append(train_feature_labels, ['topsoil', 'subsoil'])  # ... that we have to one hot encode
 
-    test_feature_data = np.array(test.ix[:, :3579])  # includes PIDN
+    # Replace categorical values in column 3579 with 1s and 0...
+    # ...then one hot encode manually, sklearn.preprocessing.OneHotEncoder doesn't work with a single column
+    np.place(train_feature_data[:, 3579], train_feature_data[:, 3579] == 'Topsoil', [1])
+    np.place(train_feature_data[:, 3579], train_feature_data[:, 3579] == 'Subsoil', [0])
+
+    # To encode, leave the 1s and 0s in column 3579, create a column of zeros in 3580 and modify 3580 when 3579 == 0
+    train_feature_data = np.column_stack((train_feature_data, np.zeros(train_feature_data.shape[0]).astype(int)))
+    for i in xrange(train_feature_data.shape[0]):
+        if train_feature_data[i][3579] == 0:
+            train_feature_data[i][3580] = 1
+
+    # Repeat steps for test set
+    test_feature_data = test.ix[:, :3580].values  # includes PIDN
+
+    # Replace categoricals and one hot encode
+    np.place(test_feature_data[:, 3579], test_feature_data[:, 3579] == 'Topsoil', [1])
+    np.place(test_feature_data[:, 3579], test_feature_data[:, 3579] == 'Subsoil', [0])
+
+    test_feature_data = np.column_stack((test_feature_data, np.zeros(test_feature_data.shape[0]).astype(int)))
+    for i in xrange(test_feature_data.shape[0]):
+        if test_feature_data[i][3579] == 0:
+            test_feature_data[i][3580] = 1
 
     # Split data in to test/train sets
     # Since train_test_split doesn't like a matrix of dependent variables we have to do this once for each
