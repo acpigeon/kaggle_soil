@@ -1,0 +1,80 @@
+Ca min: -0.5233899584
+Ca max: 9.6458153544
+Ca variance: 1.70468482891
+
+# 1) including C02 band
+RMSE: 0.158032499913
+# 2) removed CO2 band
+RMSE: 0.158662700797
+# 3) added rest of numeric features
+RMSE: 0.157688429763
+# 4) added categorical (soil type) feature
+RMSE: 0.157943189905
+# 5) adding gridsearch
+RMSE: 0.182457619404; Params: {'kernel': 'rbf', 'C': 10000, 'gamma': 0.0}; Score: -0.0699051722894
+
+
+
+P min: -0.418309166159
+P max: 13.2668405833
+P variance: 1.21481297927
+
+# 1) including C02 band
+RMSE: 1.09193115637
+# 2) removed CO2 band
+RMSE: 1.08162109485
+# 3) added rest of numeric features
+RMSE: 1.09220082991
+# 4) added categorical (soil type) feature
+RMSE: 1.10516453913
+# 5) adding gridsearch
+RMSE: 1.12526741655; Params: {'kernel': 'rbf', 'C': 10, 'gamma': 0.1}; Score: -0.717840739821
+
+
+pH min: -1.62506672718
+pH max: 3.41611666492
+pH variance: 0.88066273162
+
+# 1) including C02 band
+RMSE: 0.128855170518
+# 2) removed CO2 band
+RMSE: 0.125501088076
+# 3) added rest of numeric features
+RMSE: 0.130323741857
+# 4) added categorical (soil type) feature
+RMSE: 0.129324475376
+# 5) adding gridsearch
+RMSE: 0.129324475376; Params: {'kernel': 'rbf', 'C': 10000, 'gamma': 0.0}; Score: -0.123737397584
+
+
+
+SOC min: -0.85004974436
+SOC max: 7.20586371994
+SOC variance: 1.50757602686
+
+# 1) including C02 band
+RMSE: 0.0854551180282
+# 2) removed CO2 band
+RMSE: 0.0855557839259
+# 3) added rest of numeric features
+RMSE: 0.0854945335397
+# 4) added categorical (soil type) feature
+RMSE: 0.0842193368833
+# 5) adding gridsearch
+RMSE: 0.0722044003825; Params: {'kernel': 'rbf', 'C': 10000, 'gamma': 0.0}; Score: -0.158494341208
+
+
+Sand min: -1.4895722279
+Sand max: 2.13370043158
+Sand variance: 0.985732889479
+
+# 1) including C02 band
+RMSE: 0.102881384463
+# 2) removed CO2 band
+RMSE: 0.0796153190687
+# 3) added rest of numeric features
+RMSE: 0.0787250357811
+# 4) added categorical (soil type) feature
+RMSE: 0.0853514129415
+# 5) adding gridsearch
+RMSE: 0.120623657182; Params: {'kernel': 'rbf', 'C': 10000, 'gamma': 0.0}; Score: -0.115978505931

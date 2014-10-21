@@ -1,11 +1,12 @@
 # To Do:
-# add grid search to models
+# add grid search to models[x] and reduce param space[]
 # do feature importance
 
 import pandas as pd
 import numpy as np
 from sklearn.cross_validation import train_test_split
 from sklearn import svm
+from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import mean_squared_error
 
 
@@ -55,11 +56,11 @@ def get_data():
 
     # Split data in to test/train sets
     # Since train_test_split doesn't like a matrix of dependent variables we have to do this once for each
-    ca_x_train, ca_x_test, ca_y_train, ca_y_test = train_test_split(train_feature_data, train_predict_data[:, 0], test_size=0.33, random_state=42)
-    p_x_train, p_x_test, p_y_train, p_y_test = train_test_split(train_feature_data, train_predict_data[:, 1], test_size=0.33, random_state=42)
-    ph_x_train, ph_x_test, ph_y_train, ph_y_test = train_test_split(train_feature_data, train_predict_data[:, 2], test_size=0.33, random_state=42)
-    soc_x_train, soc_x_test, soc_y_train, soc_y_test = train_test_split(train_feature_data, train_predict_data[:, 3], test_size=0.33, random_state=42)
-    sand_x_train, sand_x_test, sand_y_train, sand_y_test = train_test_split(train_feature_data, train_predict_data[:, 4], test_size=0.33, random_state=42)
+    ca_x_train, ca_x_test, ca_y_train, ca_y_test = train_test_split(train_feature_data, train_predict_data[:, 0], test_size=0.33)
+    p_x_train, p_x_test, p_y_train, p_y_test = train_test_split(train_feature_data, train_predict_data[:, 1], test_size=0.33)
+    ph_x_train, ph_x_test, ph_y_train, ph_y_test = train_test_split(train_feature_data, train_predict_data[:, 2], test_size=0.33)
+    soc_x_train, soc_x_test, soc_y_train, soc_y_test = train_test_split(train_feature_data, train_predict_data[:, 3], test_size=0.33)
+    sand_x_train, sand_x_test, sand_y_train, sand_y_test = train_test_split(train_feature_data, train_predict_data[:, 4], test_size=0.33)
 
     # Now that the data have been shuffled and split, we can send the PIDNs along separately
     # Extract them and strip them off the data sets on the way out
@@ -76,14 +77,52 @@ def get_data():
     return data, train_feature_labels, train_predict_labels, test_feature_data, pidn_train, pidn_test  # test_feature_data includes PIDN
 
 
-def get_models():
-    # Create models for each dependent variable
+def get_basic_models():
+    # Create models for each dependent variable, this is just for beating the baseline
     model_list = {
         'Ca': svm.SVR(C=10000.0, verbose=2),
         'P': svm.SVR(C=10000.0, verbose=2),
         'pH': svm.SVR(C=10000.0, verbose=2),
         'SOC': svm.SVR(C=10000.0, verbose=2),
         'Sand': svm.SVR(C=10000.0, verbose=2)
+    }
+    return model_list
+
+
+def get_models():
+    # Create models for each dependent variable
+
+    # Ca
+    ca_svc = svm.SVR()
+    ca_params = [{'C': [10000], 'gamma': [0.0], 'kernel': ['rbf']}]
+    ca_model = GridSearchCV(ca_svc, param_grid=ca_params, scoring='mean_squared_error', verbose=1, cv=1, n_jobs=-1)
+
+    # P
+    p_svc = svm.SVR()
+    p_params = [{'C': [10], 'gamma': [0.1], 'kernel': ['rbf']}]
+    p_model = GridSearchCV(p_svc, param_grid=p_params, scoring='mean_squared_error', verbose=1, cv=1, n_jobs=-1)
+
+    # pH
+    ph_svc = svm.SVR()
+    ph_params = [{'C': [10000], 'gamma': [0.0], 'kernel': ['rbf']}]
+    ph_model = GridSearchCV(ph_svc, param_grid=ph_params, scoring='mean_squared_error', verbose=1, cv=1, n_jobs=-1)
+
+    # SOC
+    soc_svc = svm.SVR()
+    soc_params = [{'C': [10000], 'gamma': [0.0], 'kernel': ['rbf']}]
+    soc_model = GridSearchCV(soc_svc, param_grid=soc_params, scoring='mean_squared_error', verbose=1, cv=1, n_jobs=-1)
+
+    # Sand
+    sand_svc = svm.SVR()
+    sand_params = [{'C': [10000], 'gamma': [0.0], 'kernel': ['rbf']}]
+    sand_model = GridSearchCV(sand_svc, param_grid=sand_params, scoring='mean_squared_error', verbose=1, cv=3, n_jobs=-1)
+
+    model_list = {
+        'Ca': ca_model,
+        'P': p_model,
+        'pH': ph_model,
+        'SOC': soc_model,
+        'Sand': sand_model
     }
     return model_list
 
@@ -105,6 +144,8 @@ if __name__ == '__main__':
         print str(var) + " max: " + str(np.nanmax(data_sets[var]['y_test']))
         print str(var) + " variance: " + str(np.var(data_sets[var]['y_test']))
         print "RMSE: " + str(mean_squared_error(data_sets[var]['y_test'], predictions))
+        print "Params: " + str(models[var].best_params_)
+        print "Score: " + str(models[var].best_score_)
         print ""
 
         # Write out predictions to file
