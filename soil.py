@@ -1,13 +1,12 @@
 # To Do:
-# add missing categorical features [x] and test[]
 # add grid search to models
+# do feature importance
 
 import pandas as pd
 import numpy as np
 from sklearn.cross_validation import train_test_split
 from sklearn import svm
 from sklearn.metrics import mean_squared_error
-from sklearn.preprocessing import OneHotEncoder
 
 
 def get_data():
@@ -109,8 +108,6 @@ if __name__ == '__main__':
         print ""
 
         # Write out predictions to file
-        #output[var] = models[var].predict(test_data)
+        output[var] = models[var].predict(test_data[:, 1:])  # don't predict on the ID column obv
 
-
-
-    #output.to_csv('beating_benchmark_test.csv', index = False)
+    output.to_csv('output.csv', index = False)
